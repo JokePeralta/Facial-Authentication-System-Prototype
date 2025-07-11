@@ -22,7 +22,7 @@ A modern, secure, and intelligent facial recognition-based authentication system
 ## Installation
 
 bash
-git clone https://github.com/yourusername/face-auth-system.git
+git clone https://github.com/JokePeralta/Facial-Authentication-System-Prototype.git
 cd face-auth-system
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
