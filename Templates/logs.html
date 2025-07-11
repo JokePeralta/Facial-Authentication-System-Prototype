@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Authentication Logs</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f2f5;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            text-decoration: none;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f8f8f8;
+        }
+
+        .status-success {
+            color: green;
+            font-weight: bold;
+        }
+
+        .status-failed {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <a href="/" class="back-link">← Back to Dashboard</a>
+    <h1>📊 Authentication Logs</h1>
+    <div id="logs-table">Loading logs...</div>
+
+    <script>
+        async function loadLogs() {
+            const response = await fetch('/api/logs');
+            const logs = await response.json();
+            if (logs.length > 0) {
+                const table = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Type</th>
+                                <th>Confidence</th>
+                                <th>Status</th>
+                                <th>Timestamp</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${logs.map(log => `
+                                <tr>
+                                    <td>${log.username}</td>
+                                    <td>${log.auth_type}</td>
+                                    <td>${log.confidence.toFixed(1)}%</td>
+                                    <td class="${log.status === 'SUCCESS' ? 'status-success' : 'status-failed'}">
+                                        ${log.status}
+                                    </td>
+                                    <td>${new Date(log.timestamp).toLocaleString()}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+                document.getElementById('logs-table').innerHTML = table;
+            } else {
+                document.getElementById('logs-table').innerHTML = '<p>No logs found.</p>';
+            }
+        }
+
+        loadLogs();
+    </script>
+</body>
+</html>

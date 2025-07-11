@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register New User - Face Authentication</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .back-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .form-container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .camera-section {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .camera-container {
+            position: relative;
+            display: inline-block;
+            border: 3px solid #667eea;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        #video {
+            width: 400px;
+            height: 300px;
+            object-fit: cover;
+        }
+
+        .camera-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+
+        .camera-controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #2196F3, #1976D2);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(45deg, #f44336, #d32f2f);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .status-message {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .preview-section {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .preview-image {
+            max-width: 200px;
+            max-height: 200px;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            margin: 10px;
+        }
+
+        .thank-you-section {
+            text-align: center;
+            padding: 40px;
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            border-radius: 20px;
+            margin-top: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .thank-you-section h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .thank-you-section p {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .form-container {
+                padding: 20px;
+            }
+            
+            #video {
+                width: 100%;
+                max-width: 300px;
+                height: 225px;
+            }
+            
+            .camera-controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="back-btn">← Back to Dashboard</a>
+        
+        <div class="header">
+            <h1>👤 Register New User</h1>
+            <p>Enter user details and capture face sample</p>
+        </div>
+
+        <div id="registrationForm" class="form-container">
+            <form id="userForm">
+                <div class="form-group">
+                    <label for="username">Username *</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="fullName">Full Name</label>
+                    <input type="text" id="fullName" name="fullName">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email">
+                </div>
+
+                <div class="camera-section">
+                    <h3>📷 Face Capture</h3>
+                    <div class="camera-container">
+                        <video id="video" autoplay playsinline></video>
+                        <div id="cameraOverlay" class="camera-overlay">
+                            Click "Start Camera" to begin
+                        </div>
+                    </div>
+                    
+                    <div class="camera-controls">
+                        <button type="button" id="startCamera" class="btn btn-primary">📹 Start Camera</button>
+                        <button type="button" id="capturePhoto" class="btn btn-success" disabled>📸 Capture Photo</button>
+                        <button type="button" id="stopCamera" class="btn btn-danger" disabled>⏹️ Stop Camera</button>
+                    </div>
+                </div>
+
+                <div id="previewSection" class="preview-section" style="display: none;">
+                    <h3>📸 Captured Photo</h3>
+                    <canvas id="canvas" style="display: none;"></canvas>
+                    <img id="previewImage" class="preview-image" alt="Captured face">
+                </div>
+
+                <div id="statusMessage"></div>
+
+                <div style="text-align: center; margin-top: 30px;">
+                    <button type="submit" id="registerBtn" class="btn btn-success" disabled>
+                        ✅ Register User
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div id="thankYouSection" class="thank-you-section" style="display: none;">
+            <h2>🎉 Thank You!</h2>
+            <p id="thankYouName">Thank you for registering!</p>
+            <p>Your account has been successfully created.</p>
+            <p>You can now use face authentication to log in.</p>
+            <div style="margin-top: 20px;">
+                <a href="/" class="btn btn-primary">Go to Dashboard</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let video = document.getElementById('video');
+        let canvas = document.getElementById('canvas');
+        let ctx = canvas.getContext('2d');
+        let stream = null;
+        let capturedImages = [];
+
+        // Camera controls
+        document.getElementById('startCamera').addEventListener('click', startCamera);
+        document.getElementById('stopCamera').addEventListener('click', stopCamera);
+        document.getElementById('capturePhoto').addEventListener('click', capturePhoto);
+        document.getElementById('userForm').addEventListener('submit', registerUser);
+
+        async function startCamera() {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        width: { ideal: 640 },
+                        height: { ideal: 480 }
+                    }
+                });
+                video.srcObject = stream;
+
+                document.getElementById('cameraOverlay').style.display = 'none';
+                document.getElementById('startCamera').disabled = true;
+                document.getElementById('capturePhoto').disabled = false;
+                document.getElementById('stopCamera').disabled = false;
+
+                showStatus('Camera started. Capture 5 face photos.', 'info');
+            } catch (error) {
+                console.error('Camera error:', error);
+                showStatus('Error accessing camera: ' + error.message, 'error');
+            }
+        }
+
+        function stopCamera() {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                video.srcObject = null;
+                stream = null;
+            }
+
+            document.getElementById('cameraOverlay').style.display = 'flex';
+            document.getElementById('startCamera').disabled = false;
+            document.getElementById('capturePhoto').disabled = true;
+            document.getElementById('stopCamera').disabled = true;
+
+            showStatus('Camera stopped', 'info');
+        }
+
+        async function capturePhoto() {
+            try {
+                if (capturedImages.length >= 5) {
+                    showStatus('You have already captured 5 photos.', 'info');
+                    return;
+                }
+
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                const imageData = canvas.toDataURL('image/jpeg', 0.8);
+
+                // For demo purposes, simulate face detection
+                // In production, you'd check with your backend
+                let faceDetected = true;
+
+                // Uncomment this section when your backend is ready
+                /*
+                try {
+                    const response = await fetch('/api/check_face', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ image: imageData })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+
+                    const result = await response.json();
+                    faceDetected = result.success;
+                } catch (error) {
+                    console.error('Face detection error:', error);
+                    showStatus('Error checking face. Continuing anyway...', 'error');
+                }
+                */
+
+                if (!faceDetected) {
+                    showStatus('❌ Face not detected. Please try again.', 'error');
+                    return;
+                }
+
+                // Valid face image - store it
+                capturedImages.push(imageData);
+
+                // Show preview
+                const previewImg = document.getElementById('previewImage');
+                previewImg.src = imageData;
+                document.getElementById('previewSection').style.display = 'block';
+
+                showStatus(`✅ Captured photo ${capturedImages.length} of 5`, 'success');
+
+                if (capturedImages.length === 5) {
+                    document.getElementById('registerBtn').disabled = false;
+                    showStatus('✅ All 5 photos captured. You can now register.', 'success');
+                }
+            } catch (error) {
+                console.error('Capture error:', error);
+                showStatus('Error capturing photo: ' + error.message, 'error');
+            }
+        }
+
+        async function registerUser(event) {
+            event.preventDefault();
+
+            const username = document.getElementById('username').value.trim();
+            const fullName = document.getElementById('fullName').value.trim();
+            const email = document.getElementById('email').value.trim();
+
+            if (!username) {
+                showStatus('❌ Please enter a username.', 'error');
+                return;
+            }
+
+            if (capturedImages.length < 5) {
+                showStatus('❌ Please capture 5 photos before registering.', 'error');
+                return;
+            }
+
+            // Show loading state
+            const registerBtn = document.getElementById('registerBtn');
+            const originalText = registerBtn.innerHTML;
+            registerBtn.innerHTML = '<span class="loading"></span> Registering...';
+            registerBtn.disabled = true;
+
+            try {
+                const response = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                        full_name: fullName,
+                        email: email,
+                        images: capturedImages
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // Show thank you message
+                    const displayName = fullName || username;
+                    document.getElementById('thankYouName').textContent = `Thank you, ${displayName}, for registering!`;
+                    
+                    // Hide form and show thank you section
+                    document.getElementById('registrationForm').style.display = 'none';
+                    document.getElementById('thankYouSection').style.display = 'block';
+                    
+                    // Stop camera if running
+                    stopCamera();
+                    
+                    // Reset form data
+                    capturedImages = [];
+                    document.getElementById('userForm').reset();
+                    
+                    showStatus('✅ Registration successful!', 'success');
+                } else {
+                    throw new Error(result.message || 'Registration failed');
+                }
+            } catch (error) {
+                console.error('Registration error:', error);
+                showStatus('❌ Registration failed: ' + error.message, 'error');
+                
+                // Reset button
+                registerBtn.innerHTML = originalText;
+                registerBtn.disabled = false;
+            }
+        }
+
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('statusMessage');
+            statusDiv.innerHTML = `<div class="status-message status-${type}">${message}</div>`;
+            
+            // Auto-hide success messages after 5 seconds
+            if (type === 'success') {
+                setTimeout(() => {
+                    statusDiv.innerHTML = '';
+                }, 5000);
+            }
+        }
+    </script>
+</body>
+</html>
